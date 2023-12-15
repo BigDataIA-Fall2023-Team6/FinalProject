@@ -1,0 +1,15 @@
+streamlit 
+fastapi 
+uvicorn
+python-dotenv
+requests
+seaborn
+matplotlib
+plotly
+geopy
+toml
+boto3
+Pillow
+st-files-connection
+python-jose
+pydeck
