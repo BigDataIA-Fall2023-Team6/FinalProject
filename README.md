@@ -1,21 +1,21 @@
-#YelpoBot Explorer
-##Aplication Links
+# YelpoBot Explorer
+## Aplication Links
 [Codelabs](https://codelabs-preview.appspot.com/?file_id=16AosZYTQGxKFyeH_5Vbqt3KUWfzX4Q8RcAOfVA1nRVA)
 [![Apache Airflow](https://img.shields.io/badge/Apache%20Airflow-017CEE?style=for-the-badge&logo=Apache%20Airflow&logoColor=white)](http://34.75.198.16:8080/home)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](http://34.75.198.16:8000/docs)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)](http://34.75.198.16:8090/)
 
-##Abstract
+## Abstract
 
 YelpoBot Explorer is a cutting-edge Data-as-a-Service platform designed to empower businesses to leverage vast quantities of data from Yelp for enhanced decision-making. Integrating the Yelp Fusion API, Apache Airflow, Snowflake, OpenAI, Milvus, and Streamlit with FastAPI, the platform orchestrates a seamless flow of data from collection to insightful analytics. It transcends traditional data processing limitations by employing AI-driven insights and real-time processing capabilities, providing a unified solution for data aggregation, analysis, and interactive exploration.
 
 The platform's core advantage lies in its user-centric design, which simplifies the data analytics process, making it accessible to both technical and non-technical users. YelpoBot Explorer offers real-time insights, trend analysis, and predictive analytics that are crucial for strategic planning across marketing, customer experience, product development, and operational efficiency. By harnessing advanced technologies in unison, YelpoBot Explorer serves as a beacon for businesses to navigate the data-rich landscape of the modern digital marketplace.
 
-##Architecture Diagram
+## Architecture Diagram
 
 
-![Alt Text](ArchitectureDiagram.png)
-
+![Alt Text](Images/ArchitectureDiagram.png)
+![Video Demo](https://codelabs-preview.appspot.com/?file_id=16AosZYTQGxKFyeH_5Vbqt3KUWfzX4Q8RcAOfVA1nRVA)
 
 ## Getting Started
 
@@ -61,14 +61,14 @@ The platform's core advantage lies in its user-centric design, which simplifies 
 
 
 
-![Alt Text](Yelp_Business_to_Snowflake.png)
-![Alt Text](YelpAPI.png)
+![Alt Text](Images/Yelp_Business_to_Snowflake.png)
+![Alt Text](Images/YelpAPI.png)
 
 ## Application Snippets
 
-![Alt Text](YelpDashBoard.png)
-![Alt Text](YelpDashboard_01.png)
-![Alt Text](YelpDashboard_03.png)
+![Alt Text](Images/YelpDashBoard.png)
+![Alt Text](Images/YelpDashboard_01.png)
+![Alt Text](Images/YelpDashboard_03.png)
 
 
 

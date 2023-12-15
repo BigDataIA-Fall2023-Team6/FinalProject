@@ -287,6 +287,17 @@ def get_yelp_business_details(business_id: str):
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+    # Function to interact with OpenAI's text completion model
+def get_openai_response(prompt):    
+        openai.api_key = os.environ.get('API_KEY') 
+        response = openai.Completion.create(
+            engine="davinci",
+            prompt=prompt,
+            max_tokens=150
+        )
+        return response.choices[0].text.strip()
+
 # Endpoint to create embeddings and query Pinecone
 @app.post("/embeddings/")
 async def query_reviews(query: Query, token: str = Depends(oauth2_scheme)):
@@ -335,6 +346,9 @@ async def chatbot_endpoint(query: Query):
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": f"Answer about Resturants in Pennsylvania, Just Give me 5 output resturants with their review counts and Rating in numeric values, Restrict it to 400 words: {query.text}"}]
         )
+
+        
         return {"response": response.choices[0].message["content"]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
