@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install uvicorn gunicorn 
 RUN python -m spacy download en_core_web_md
 
-COPY main.py ./
+# COPY main.py ./
 COPY chatbot.py ./
 
 # copy Pipfile Pipfile.lock ./
@@ -18,7 +18,7 @@ COPY chatbot.py ./
 
 EXPOSE 8000
 
-CMD [ "gunicorn","-w", "4","-k","uvicorn.workers.UvicornWorker","-b","0.0.0.0:8000", "main:app" ]
+CMD [ "gunicorn","-w", "4","-k","uvicorn.workers.UvicornWorker","-b","0.0.0.0:8000", "chatbot:app" ]
 
 # # Use an official Python runtime as a parent image
 # FROM python:3.10.12

@@ -2,10 +2,11 @@ import os
 import requests
 import streamlit as st
 from jose import jwt
-import render_analytics_page
 from dotenv import load_dotenv
 import sys
 import admin
+import chatbot
+import render_analytics_page
 
 load_dotenv()
 
@@ -97,6 +98,7 @@ def main():
             pages = {"Admin Dashboard": admin.show_admin_page}
         else:
             pages = {"Analytics": render_analytics_page.render_analytics_dashboard}
+            pages ={"Chatbot":chatbot.show_chatbot_page}
 
         selection = st.sidebar.radio("Go to", list(pages.keys()) + ["Log Out"])
         if selection in pages:

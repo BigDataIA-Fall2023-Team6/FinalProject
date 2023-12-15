@@ -1,0 +1,13 @@
+python-dotenv
+requests
+smart_open
+langdetect
+google-cloud-storage
+scikit-learn
+pandas
+snowflake-snowpark-python
+openai
+snowflake-connector-python
+snowflake-connector-python[pandas]
+spacy
+pinecone-client

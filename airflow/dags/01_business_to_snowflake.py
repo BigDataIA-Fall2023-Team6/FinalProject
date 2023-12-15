@@ -9,7 +9,6 @@ import os
 from dotenv import load_dotenv
 from snowflake.snowpark import Session
 from snowflake.snowpark.functions import lit, current_timestamp
-from airflow.hooks.base_hook import BaseHook
 from smart_open import open
 
 # These are placeholders for where your actual credentials and file paths would go

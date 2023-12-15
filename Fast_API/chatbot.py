@@ -50,3 +50,4 @@ async def query_reviews(query: Query):
             return {"error": "Unexpected response structure from Pinecone"}
     except Exception as e:
         return {"error": str(e)}
+    

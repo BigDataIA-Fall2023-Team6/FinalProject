@@ -3,7 +3,7 @@ FROM python:3.10.12
 WORKDIR  /app
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
-COPY main.py ./
+COPY chatbot.py ./
 # COPY search.py ./
 
 # COPY .env ./
@@ -11,4 +11,4 @@ COPY main.py ./
 # RUN pipenv install --system --deploy --ignore-pipfile
 ### Container Env same as local at this point
 EXPOSE 8090
-CMD ["streamlit", "run", "main.py", "--server.port", "8090"]
+CMD ["streamlit", "run", "chatbot.py", "--server.port", "8090"]

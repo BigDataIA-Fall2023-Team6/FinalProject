@@ -11,3 +11,4 @@ spacy
 pinecone-client
 python -m spacy download en_core_web_md
 google-cloud-storage
+smart_open
