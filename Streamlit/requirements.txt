@@ -8,3 +8,6 @@ matplotlib
 plotly
 geopy
 toml
+boto3
+Pillow
+st-files-connection

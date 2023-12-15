@@ -7,7 +7,7 @@ import seaborn as sns
 from dotenv import load_dotenv
 
 load_dotenv()
-BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:8000")
+BASE_URL = os.getenv("BASE_URL")
 
 def fetch_data(token):
     headers = {"Authorization": f"Bearer {token}"}

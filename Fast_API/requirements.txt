@@ -8,3 +8,4 @@ pinecone-client==2.2.4
 python-jose
 passlib
 asyncpg
+collections
