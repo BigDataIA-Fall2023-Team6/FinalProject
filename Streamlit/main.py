@@ -4,7 +4,6 @@ import streamlit as st
 from jose import jwt
 import render_analytics_page
 import semantic_search
-# import chatbot_page
 from dotenv import load_dotenv
 import admin
 import chatbot
