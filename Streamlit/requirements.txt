@@ -1,0 +1,11 @@
+streamlit 
+fastapi 
+uvicorn
+python-dotenv
+requests
+seaborn
+matplotlib
+plotly
+geopy
+toml
+math
