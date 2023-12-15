@@ -11,11 +11,13 @@ YelpoBot Explorer is a cutting-edge Data-as-a-Service platform designed to empow
 
 The platform's core advantage lies in its user-centric design, which simplifies the data analytics process, making it accessible to both technical and non-technical users. YelpoBot Explorer offers real-time insights, trend analysis, and predictive analytics that are crucial for strategic planning across marketing, customer experience, product development, and operational efficiency. By harnessing advanced technologies in unison, YelpoBot Explorer serves as a beacon for businesses to navigate the data-rich landscape of the modern digital marketplace.
 
-## Architecture Diagram
+## Architecture Diagram and Demo Link: Click below
 
+[![Video](Images/ArchitectureDiagram.png)](https://youtu.be/CC1M4NuC-vg)
 
-![Alt Text](Images/ArchitectureDiagram.png)
-![Video Demo](https://codelabs-preview.appspot.com/?file_id=16AosZYTQGxKFyeH_5Vbqt3KUWfzX4Q8RcAOfVA1nRVA)
+# Demo Link
+
+[Demo Video](https://youtu.be/CC1M4NuC-vg)
 
 ## Getting Started
 
