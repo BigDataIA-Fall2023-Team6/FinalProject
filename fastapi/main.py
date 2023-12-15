@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 import asyncpg
 import os
 from dotenv import load_dotenv
+import snowflake.connector
+import pandas as pd
 
 load_dotenv()
 
@@ -40,6 +42,26 @@ async def connect_to_db():
         port=5432
     )
     return conn
+
+def load_data_sync(query):
+    try:
+        with snowflake.connector.connect(
+            user=os.getenv('SNOWFLAKE_USER'),
+            password=os.getenv('SNOWFLAKE_PASSWORD'),
+            account=os.getenv('SNOWFLAKE_ACCOUNT'),
+            role=os.getenv('SNOWFLAKE_ROLE'),
+            warehouse=os.getenv('SNOWFLAKE_WAREHOUSE'),
+            database=os.getenv('SNOWFLAKE_DATABASE'),
+            schema=os.getenv('SNOWFLAKE_SCHEMA'),
+        ) as conn:
+            with conn.cursor() as cur:
+                cur.execute(query)
+                df = pd.DataFrame(cur.fetchall(), columns=[col[0] for col in cur.description])
+                return df
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        # Re-raise the exception for the caller to handle
+        raise
 
 @app.on_event("startup")
 async def startup_db():
@@ -162,3 +184,51 @@ async def fetch_data(user: User = Depends(get_current_user), conn = Depends(conn
     query = "SELECT user_id, username, account_type, created_at, last_login FROM users;"
     rows = await conn.fetch(query)
     return [dict(row) for row in rows] 
+
+
+@app.get("/business_density_data")
+def business_density_data(token: str = Depends(oauth2_scheme)):
+    try:
+        query = """
+            SELECT NAME, ADDRESS, CITY, POSTAL_CODE, LATITUDE, LONGITUDE, STARS, CATEGORIES
+            FROM BUSINESS
+            GROUP BY NAME, ADDRESS, CITY, POSTAL_CODE, LATITUDE, LONGITUDE, STARS, CATEGORIES
+        """
+        result = load_data_sync(query=query)
+        if not result.empty:
+            data = result.to_dict(orient='records')  # Convert DataFrame to a list of dictionaries
+            return data
+        else:
+            return []  # Return an empty list if there are no results
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/category_popularity_data")
+def category_popularity_data(token: str = Depends(oauth2_scheme)):
+    try:
+        query = "SELECT CITY, POSTAL_CODE, CATEGORIES FROM BUSINESS"
+        result = load_data_sync(query=query)
+        if not result.empty:
+            data = result.to_dict(orient='records')  # Convert DataFrame to a list of dictionaries
+            return data
+        else:
+            return []  # Return an empty list if there are no results
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/fetch_business_data")
+def fetch_business_data(token: str = Depends(oauth2_scheme)):
+    try:
+        query = "SELECT * FROM BUSINESS"
+        result = load_data_sync(query=query)
+        if not result.empty:
+            data = result.to_dict(orient='records')  # Convert DataFrame to a list of dictionaries
+            return data
+        else:
+            return []  # Return an empty list if there are no results
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
