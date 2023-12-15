@@ -192,7 +192,6 @@ def fetch_review_yelp_data(**context):
         # df = df[~df['BUSINESS_ID'].isin(existing_ids)]
         # existing_ids = set([row[0] for row in df])
         # print(f"Number of new BUSINESS_IDs to be added: {len(existing_ids)}")
-        
     #Fetching All Businesses in the PA_Business Table
 
     headers = {
@@ -225,35 +224,6 @@ def fetch_review_yelp_data(**context):
             all_reviews_df = pd.concat([all_reviews_df, df])
     print(all_reviews_df.head(1))
     return all_reviews_df
-
-        # # Handle rate limiting or other potential errors
-        # elif response.status_code == 429:
-        #     # Implement rate limit handling, e.g., sleep
-        #     pass
-        # else:
-        #     # Log error
-        #     pass
-# #Function2
-# def transform_review_data(**context):
-#     review_data = context['ti'].xcom_pull(task_ids='fetch_review_yelp_data')
-#     df = pd.DataFrame(review_data)
-#     df['REVIEW_ID'] = df['id']
-#     df['USER_ID'] = df['user'].apply(lambda x: x['id'])
-#     # df['BUSINESS_ID'] = business_id
-#     df['STARS'] = df['rating']
-#     df['TEXT'] = df['text']
-#     df['DATE'] = df['time_created']
-#     # df['LOAD_DATETIME'] = datetime.now()  # Current timestamp
-#     df['USERNAME']= df['user'].apply(lambda x: x['name'])
-
-#     # Select only the columns that match your database schema
-#     db_columns = ['REVIEW_ID', 'BUSINESS_ID' ,  'USER_ID', 'USERNAME', 'STARS', 'TEXT', 'DATE']  #'BUSINESS_ID' ,
-#     df = df[db_columns]
-
-#     print(df.head(1))
-
-#     # Return the transformed DataFrame
-#     return df
 
 # Function3
 def review_to_snowflake(**context):
@@ -343,7 +313,7 @@ def review_to_snowflake(**context):
 # dag = DAG('yelp_to_snowflake',
 #           default_args=default_args,
 #           description='Load Yelp data to Snowflake',
-#           schedule_interval='*/29 * * * *')
+#           schedule_interval='* * 1 * *')
 
 default_args = {
     'owner': 'airflow',
@@ -360,7 +330,7 @@ dag = DAG(
     default_args=default_args,
     description='Load Yelp API data to Snowflake',
     # Set to None for manual trigger only
-    schedule_interval=None
+    schedule_interval='* * 1 * *'
 )
 
 
@@ -387,12 +357,6 @@ fetch_yelp_review_data_task = PythonOperator(
     python_callable=fetch_review_yelp_data,
     dag=dag,
 )
-
-# transform_review_data_task = PythonOperator(
-#     task_id='transform_review_data',
-#     python_callable=transform_review_data,
-#     dag=dag,
-# )
 
 review_to_snowflake_task = PythonOperator(
     task_id='review_to_snowflake',

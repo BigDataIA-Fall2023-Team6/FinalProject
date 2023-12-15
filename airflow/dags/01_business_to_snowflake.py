@@ -28,27 +28,6 @@ def download_blob(bucket_name, source_blob_name, destination_file_name, **kwargs
 
 # Function to filter JSON data and save to CSV
 def filter_and_save_data_gcs(json_file_path, state, csv_file_path, **kwargs):
-    # Create a client to access GCS
-    # storage_client = storage.Client()
-    # bucket = storage_client.bucket(bucket_name)
-    # blob = bucket.blob(source_blob_name)
-
-    # # Construct the URI for the blob
-    # blob_uri = f"gs://{bucket_name}/{source_blob_name}"
-
-    # # Stream the JSON file from GCS and filter in memory
-    # data = []
-    # with open(blob_uri, 'r') as f:
-    #     for line in f:
-    #         business = json.loads(line)
-    #         if business.get("state") == state:
-    #             data.append(business)
-
-    # # Create a DataFrame and save to CSV
-    # restaurants_df = pd.DataFrame(data)
-    # restaurants_df.to_csv(csv_file_path, index=False)
-    # print(f"Data for state {state} saved to {csv_file_path}")
-    
 
     data = []
     with open(json_file_path) as f:
@@ -108,71 +87,7 @@ def load_to_snowflake(csv_file_path,csv_review_file_path, **kwargs):
     snowpark_df_with_datetime.write.mode("append").save_as_table("PA_restaurant")
     
     #     #Review
-        
-    
-    # df = pd.read_csv(csv_review_file_path)
-    # snowpark_review_df = session.create_dataframe(df)
-    
-    # # batch_size = 10000 
-    # session.sql("""CREATE OR REPLACE TABLE PA_review (
-    #     review_id STRING,
-    #     user_id STRING,
-    #     business_id STRING,
-    #     stars INTEGER,
-    #     useful INTEGER,
-    #     funny INTEGER,
-    #     cool INTEGER,
-    #     text STRING,
-    #     date STRING,
-    #     load_datetime TIMESTAMP_LTZ
-    # )""").collect()
-    
-    # # Iterate through CSV file in chunks
-    # # for chunk in pd.read_csv(csv_file_path, chunksize=batch_size):
-    # #     snowpark_df = session.create_dataframe(chunk)
-    # snowpark_review_df_with_datetime = snowpark_review_df.with_column("load_datetime", current_timestamp())
-    # snowpark_review_df_with_datetime.write.mode("append").save_as_table("PA_review")
-    
-    
-    
-# def load_reviews_to_snowflake(csv_review_file_path, **kwargs):
-#     conn = BaseHook.get_connection('Snowflake_Yelp')
-#     conn_config = {
-#         "account": conn.extra_dejson.get('account'),
-#         "user": conn.login,
-#         "password": conn.password,
-#         "database": conn.extra_dejson.get('database'),
-#         "warehouse": conn.extra_dejson.get('warehouse'),
-#         "role": conn.extra_dejson.get('role'),
-#         "schema": conn.schema
-#         # ... any other configs needed
-#     }
-#     session = Session.builder.configs(conn_config).create()
-    
-    
-    
-#     df = pd.read_csv(csv_review_file_path)
-#     snowpark_review_df = session.create_dataframe(df)
-    
-#     # batch_size = 10000 
-#     session.sql("""CREATE OR REPLACE TABLE PA_review (
-#         review_id STRING,
-#         user_id STRING,
-#         business_id STRING,
-#         stars INTEGER,
-#         useful INTEGER,
-#         funny INTEGER,
-#         cool INTEGER,
-#         text STRING,
-#         date STRING,
-#         load_datetime TIMESTAMP_LTZ
-#     )""").collect()
-    
-#     # Iterate through CSV file in chunks
-#     # for chunk in pd.read_csv(csv_file_path, chunksize=batch_size):
-#     #     snowpark_df = session.create_dataframe(chunk)
-#     snowpark_review_df_with_datetime = snowpark_review_df.with_column("load_datetime", current_timestamp())
-#     snowpark_review_df_with_datetime.write.mode("append").save_as_table("PA_review")
+
 
 # Define DAG
 default_args = {
@@ -222,15 +137,5 @@ t3 = PythonOperator(
                'csv_review_file_path': '/opt/airflow/CSVFiles/file.csv'},
     dag=dag,
 )
-
-# t4 = PythonOperator(
-#     task_id='load_reviews_data_to_snowflake',
-#     python_callable=load_reviews_to_snowflake,
-#     op_kwargs={
-#                'csv_review_file_path': '/opt/airflow/CSVFiles/file.csv'},
-#     dag=dag,
-# )
-
-# Define the task
 
 t1 >> t2 >> t3

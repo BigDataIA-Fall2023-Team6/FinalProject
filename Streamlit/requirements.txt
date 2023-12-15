@@ -14,3 +14,4 @@ st-files-connection
 python-jose
 pydeck
 snowflake-connector-python
+numpy

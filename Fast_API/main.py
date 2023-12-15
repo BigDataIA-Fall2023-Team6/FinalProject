@@ -236,8 +236,7 @@ def fetch_business_data(token: str = Depends(oauth2_scheme)):
             return []  # Return an empty list if there are no results
     except Exception as e:
         print(f"Error occurred: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-   
+        raise HTTPException(status_code=500, detail=str(e))  
 
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 YELP_API_KEY = os.getenv("YELP_API_KEY")
@@ -290,34 +289,25 @@ def get_yelp_business_details(business_id: str):
 
 # Endpoint to create embeddings and query Pinecone
 @app.post("/embeddings/")
-async def query_reviews(query: Query):
+async def query_reviews(query: Query, token: str = Depends(oauth2_scheme)):
     # Create embedding from the query text
     doc = nlp(query.text)
     embedding = doc.vector.tolist()
-
     # Query Pinecone with the generated embedding
     try:
         query_result = index.query(embedding, top_k=50, include_metadata=True)
 
         if 'matches' in query_result:
             matches = query_result['matches']
+            # Count occurrences of each BUSINESS_ID
+            business_id_counts = Counter(match['metadata']['BUSINESS_ID'] for match in matches)
 
-            # Count Business IDs
-            business_count = Counter(match['metadata']['BUSINESS_ID'] for match in matches)
-
-            # Find the most frequent Business IDs
-            max_count = max(business_count.values())
-            frequent_businesses = [bid for bid, count in business_count.items() if count == max_count]
-
-            # In case of a tie, prioritize by latest date
-            if len(frequent_businesses) > 1:
-                frequent_businesses.sort(key=lambda bid: max(datetime.fromisoformat(match['metadata']['DATE']) 
-                                                            for match in matches if match['metadata']['BUSINESS_ID'] == bid), 
-                                         reverse=True)
-
+            # Get top 10 BUSINESS_IDs with the highest count
+            top_5_business_ids = business_id_counts.most_common(5)
+            print(top_5_business_ids)
             # Get details from Yelp for the most frequent businesses
             yelp_details = []
-            for business_id in frequent_businesses[:10]:  # Limit to top 10 results
+            for business_id in top_5_business_ids:  # Limit to top 10 results
                 try:
                     details = get_yelp_business_details(business_id)
                     yelp_details.append(details)

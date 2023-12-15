@@ -41,56 +41,13 @@ def load_to_snowflake(csv_file_path, **kwargs):
         "warehouse": conn.extra_dejson.get('warehouse'),
         "role": conn.extra_dejson.get('role'),
         "schema": conn.schema
-        # ... any other configs needed
     }    
-#     conn = snowflake.connector.connect(
-#     user='VickyH',
-#     password='Vicky$2800',
-#     account='xu61959.us-east4.gcp',
-#     warehouse='Yelp_WH',
-#     database='Yelp_DB',
-#     role='Yelp_ROLE',
-#     schema='PA_Restaurants'
-# )
-    session = Session.builder.configs(conn_config).create()
-    # stage_name = "my_stage"
-    # cursor = conn.cursor()
-    # cursor.execute(f'PUT file://{csv_file_path} @{stage_name}')
-    
-    # stage_name = "my_stage" 
-    
-    # target_table = 'REVIEWS'
-    # copy_into_sql = f"COPY INTO {target_table} FROM @{stage_name}/file.csv FILE_FORMAT = (TYPE = CSV SKIP_HEADER = 1) ON_ERROR = CONTINUE;"
-    # cursor.execute(copy_into_sql)
 
-    
-    
-    
-    # cursor.close()
-    # conn.close()
-    
-    # copy_into_sql = f'''
-    # COPY INTO Your_Target_Table
-    # FROM {csv_file_path}
-    # FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)
-    # ON_ERROR = CONTINUE  -- Handle errors gracefully
-    # '''
-    # session.sql(copy_into_sql).execute()
+    session = Session.builder.configs(conn_config).create()
+
     batch_size = 10000
     
-    # session.sql("""CREATE OR REPLACE TABLE Reviews (
-    #     review_id STRING,
-    #     user_id STRING,
-    #     business_id STRING,
-    #     stars INTEGER,
-    #     text STRING,
-    #     date STRING,
-    #     load_datetime TIMESTAMP_LTZ
-    # )""").collect()
-    
-    
-
-    
+  
     # Iterate through CSV file in chunks
     for chunk in pd.read_csv(csv_file_path, chunksize=batch_size):
         chunk['date'] = pd.to_datetime(chunk['date'])

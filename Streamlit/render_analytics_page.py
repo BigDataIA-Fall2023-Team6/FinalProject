@@ -6,6 +6,7 @@ import os
 from geopy.distance import geodesic
 import math
 import pydeck as pdk
+import numpy as np
 
 from dotenv import load_dotenv
 
@@ -238,14 +239,61 @@ def sentiment_analysis_page(token):
 
         
 ################  SUGGESTION IMPLEMENTATION LOGIC  ####################
+        
+def analyze_business(business_df, category, selected_city, num_clusters=5):
+    # Clean the 'CATEGORIES' column
+    business_df['CATEGORIES_LIST'] = business_df['CATEGORIES'].str.replace(r'[\n\[\]"\' ]', '', regex=True)
+    business_df['CATEGORIES_LIST'] = business_df['CATEGORIES_LIST'].str.split(',')
 
+    # Explode the list into separate rows
+    df_exploded = business_df.explode('CATEGORIES_LIST')
+
+    # Filter rows where categories contain the specified category
+    filtered_df_cat = df_exploded[df_exploded['CATEGORIES_LIST'] == category]
+
+    # Use filtered_df_cat for city filtering
+    filtered_df = filtered_df_cat[filtered_df_cat['CITY'] == selected_city]
+
+    if filtered_df.empty:
+        return "No businesses found for the selected category in the specified city."
+
+    # Calculate average rating and review count
+    filtered_df['WEIGHTED_RATING'] = filtered_df['STARS'] * filtered_df['REVIEW_COUNT']
+    city_business_stats = filtered_df.groupby('POSTAL_CODE').agg(
+        avg_rating=('WEIGHTED_RATING', lambda x: np.sum(x) / np.sum(filtered_df.loc[x.index, 'REVIEW_COUNT'])),
+        total_reviews=('REVIEW_COUNT', 'sum'),
+        business_count=('BUSINESS_ID', 'count')
+    ).reset_index()
+
+    # Sort by avg_rating and total_reviews to recommend the best location
+    recommendations = city_business_stats.sort_values(by=['avg_rating', 'total_reviews'], ascending=[True, False])
+
+    return recommendations
+
+def recommendation_system(token):
+    st.title("Yelp Business Recommendation System")
+
+    data_business = fetch_data("fetch_business_data", token)
+    if data_business:
+        business_df = pd.DataFrame(data_business)
+
+    # User inputs
+    selected_city = st.selectbox("Select a city", business_df['CITY'].unique())
+    category = st.text_input("Enter a business category (e.g., Indian, Italian, Chinese)", value='Indian')
+
+    if st.button("Recommend Location"):
+        if category:
+            business_data = analyze_business(business_df, category, selected_city)
+            st.write(business_data)
+        else:
+            st.error("Please enter a business category.")
 
 #######################################################################
 
 
 def render_analytics_dashboard(token):
     st.sidebar.title("Analytics Dashboard")
-    page = st.sidebar.radio("Choose a page:", ["Business Density", "Category Popularity", "Restaurant Specifc Cuisine", "Sentiment Analysis"])
+    page = st.sidebar.radio("Choose a page:", ["Business Density", "Category Popularity", "Restaurant Specifc Cuisine", "Sentiment Analysis", "Recommendation"])
 
     if page == "Business Density":
         business_density_page(token)
@@ -255,3 +303,5 @@ def render_analytics_dashboard(token):
         find_best_restaurants(token)
     elif page == "Sentiment Analysis":
         sentiment_analysis_page(token)
+    elif page == "Recommendation":
+        recommendation_system(token)
