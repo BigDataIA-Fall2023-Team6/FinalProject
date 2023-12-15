@@ -12,3 +12,4 @@ snowflake-connector-python
 pandas
 python-multipart
 pytest
+openai

@@ -321,3 +321,20 @@ async def query_reviews(query: Query, token: str = Depends(oauth2_scheme)):
 
     except Exception as e:
         return {"error": str(e)}
+    
+class Query(BaseModel):
+    text: str
+
+import openai
+openai.api_key = 'API_KEY'
+
+@app.post("/chatbot/")
+async def chatbot_endpoint(query: Query):
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": f"Answer about Resturants in Pennsylvania, Just Give me 5 output resturants with their review counts and Rating in numeric values, Restrict it to 400 words: {query.text}"}]
+        )
+        return {"response": response.choices[0].message["content"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
